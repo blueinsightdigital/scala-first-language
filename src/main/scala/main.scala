@@ -6,6 +6,7 @@ object SamplePromptInstruction:
     Seq(PromptMessage.SummarizeDirection, 
     PromptMessage.CreativeDirection, 
     PromptMessage.TrueToTextDirection, 
+    PromptMessage.CutoffReferenceTime(Payload("1950")),
     PromptMessage.PayloadDirection(Payload("\n```The weather was super hot, and it made the travellers dreary and forlorn.```")))
 end SamplePromptInstruction
 
@@ -14,6 +15,7 @@ object Prompts:
     case SummarizeDirection extends PromptMessage("""Summarize the below text enclosed within triple backticks into a short sentence of less than 15 words.""")
     case CreativeDirection extends PromptMessage("""Be creative.""")
     case TrueToTextDirection extends PromptMessage("""Be as close to the text below as possible.""")
+    case CutoffReferenceTime(p: Payload) extends PromptMessage(s"""Do not refer to any incident before the date mentioned here: ${p.p}.""")
     case PayloadDirection(p: Payload) extends PromptMessage()
 
     def getMessage: String = this match {
