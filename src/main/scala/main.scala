@@ -52,19 +52,29 @@ object Prompts:
   def getPrompt(promptMessages: Seq[PromptMessage]): String =
     promptMessages.map(_.getMessage).mkString(" ")
 
-  def basicPrompt(): Task[String] = {
-    ZIO.succeed(getPrompt(SamplePromptInstruction.summarizePromptInstruction))
-  }
 end Prompts
+
+case class PromptService():
+  def basicPrompt(): Task[String] = {
+    ZIO.succeed(
+      Prompts.getPrompt(SamplePromptInstruction.summarizePromptInstruction)
+    )
+  }
+end PromptService
+
+object PromptService {
+  val live: ZLayer[Any, Throwable, PromptService] =
+    ZLayer.fromFunction(PromptService.apply _)
+}
 
 object MainApp extends ZIOAppDefault {
   val myApp: ZIO[Any, Throwable, Unit] =
     for {
       date <- Clock.currentDateTime
       _ <- ZIO.logInfo(s"Application started at $date")
-      result <- Prompts.basicPrompt()
+      result <- PromptService().basicPrompt()
       _ <- Console.printLine(result)
     } yield ()
 
-  def run = myApp
+  def run = myApp.provideLayer(PromptService.live)
 }
