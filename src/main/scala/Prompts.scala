@@ -50,6 +50,7 @@ end Prompts
 
 trait PromptServiceCore:
   def basicPrompt(): Task[String]
+end PromptServiceCore
 
 case class PromptService() extends PromptServiceCore:
   def basicPrompt(): Task[String] = {
