@@ -26,6 +26,10 @@ import cats.implicits.catsStdInstancesForFuture
 import cats.instances.all.catsStdInstancesForFuture
 import cats.instances.future.catsStdInstancesForFuture
 
+import cats.implicits._
+
+import zio.interop.catz.core._
+
 object GlobalConstants {
   val model = ModelId.gpt_3_5_turbo
 }
@@ -69,45 +73,43 @@ object TicketFree {
   // anywhere in the code
 
   // the program will crash if a type is incorrectly specified.
-  def impureCompiler: ChatStoreA ~> Future = {
-    new (ChatStoreA ~> Future) {
+  def impureCompiler: ChatStoreA ~> Task = {
+    new (ChatStoreA ~> Task) {
 
       // a very simple (and imprecise) chat archive
       var chats = scala.collection.mutable.ListBuffer[MessageSpec]()
 
-      def apply[A](fa: ChatStoreA[A]): Future[A] = {
+      def apply[A](fa: ChatStoreA[A]): Task[A] = {
         fa match {
           case SystemSays(content) =>
             println(s"system says $content")
             chats += MessageSpec(role = ChatRole.System, content = content)
-            Future.unit
+            ZIO.fromFuture(_ => Future.unit)
           case UserSays(content) =>
             println(s"user says $content")
             chats += MessageSpec(role = ChatRole.User, content = content)
             // get response and place it inside ?
-            Future.unit
+            ZIO.fromFuture(_ => Future.unit)
           case AssistantSays(content) =>
             println(s"assistant says $content")
             chats += MessageSpec(role = ChatRole.Assistant, content = content)
-            Future.unit
+            ZIO.fromFuture(_ => Future.unit)
           case ExecuteChat =>
             println(s"executing chat")
-            helperChatAI(chats.toSeq).asInstanceOf[Future[A]]
+            helperChatAI(chats.toSeq).asInstanceOf[Task[A]]
         }
       }
     }
   }
 
-  def getOutcome(program: ChatStore[Future[String]]) = {
-    implicit val ec = ExecutionContext.global
-    implicit val materializer = Materializer(ActorSystem())
-
-    val outcome: Future[String] = program.foldMap(impureCompiler).flatten
-    outcome.asInstanceOf[Future[String]]
+  def getOutcome(program: ChatStore[Task[String]]) = {
+    val outcome: Task[String] =
+      program.foldMap(impureCompiler).flatten
+    outcome.asInstanceOf[Task[String]]
   }
 
   // helper function to execute the chat for a prompt
-  def helperChatAI(messages: Seq[MessageSpec]): Future[String] = {
+  def helperChatAI(messages: Seq[MessageSpec]): Task[String] = {
     implicit val ec = ExecutionContext.global
     implicit val materializer = Materializer(ActorSystem())
 
@@ -120,7 +122,7 @@ object TicketFree {
       model = GlobalConstants.model
     )
 
-    val result =
+    val result = ZIO.fromFuture { _ =>
       service
         .createChatCompletion(
           messages = messages,
@@ -129,7 +131,7 @@ object TicketFree {
         .map { chatCompletion =>
           chatCompletion.choices.head.message.content
         }
-
+    }
     // service.close()
 
     result
@@ -144,10 +146,7 @@ case class OpenAIService() extends OpenAIServiceCore:
   def getOutcome(prompt: Seq[String] = Seq()): Task[String] = {
     import TicketFree._
 
-    implicit val ec = ExecutionContext.global
-    implicit val materializer = Materializer(ActorSystem())
-
-    val program: ChatStore[Future[String]] =
+    val program: ChatStore[Task[String]] =
       for {
         _ <- systemSays("You are a helpful assistant.")
         _ <- userSays("Who won the world series in 2020?")
@@ -156,9 +155,9 @@ case class OpenAIService() extends OpenAIServiceCore:
         )
         _ <- userSays("Who won the most recent cricket world cup?")
         result <- executeChat()
-      } yield Future(result)
+      } yield ZIO.succeed(result)
 
-    ZIO.fromFuture(_ => TicketFree.getOutcome(program))
+    TicketFree.getOutcome(program)
 
     // ZIO.succeed("This is the outcome")
   }

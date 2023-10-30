@@ -12,6 +12,7 @@ object MainApp extends ZIOAppDefault {
       outcome <- OpenAIService().getOutcome()
       _ <- Console.printLine(ticket)
       _ <- Console.printLine(result)
+      _ <- Console.printLine("")
       _ <- Console.printLine(outcome)
     } yield ()
 
