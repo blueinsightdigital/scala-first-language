@@ -102,7 +102,7 @@ object TicketFree {
     implicit val ec = ExecutionContext.global
     implicit val materializer = Materializer(ActorSystem())
 
-    val outcome: Future[Future[String]] = program.foldMap(impureCompiler)
+    val outcome: Future[String] = program.foldMap(impureCompiler).flatten
     outcome.asInstanceOf[Future[String]]
   }
 

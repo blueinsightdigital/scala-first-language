@@ -16,5 +16,5 @@ object MainApp extends ZIOAppDefault {
     } yield ()
 
   def run =
-    myApp.provide(PromptService.live, FakeDBService.live, OpenAIService.live)
+    myApp.provide(PromptService.live, FakeDBService.live)
 }
