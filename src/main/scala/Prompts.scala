@@ -48,7 +48,10 @@ object Prompts:
 
 end Prompts
 
-case class PromptService():
+trait PromptServiceCore:
+  def basicPrompt(): Task[String]
+
+case class PromptService() extends PromptServiceCore:
   def basicPrompt(): Task[String] = {
     ZIO.succeed(
       Prompts.getPrompt(SamplePromptInstruction.summarizePromptInstruction)
