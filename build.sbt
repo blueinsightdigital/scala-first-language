@@ -16,6 +16,10 @@ libraryDependencies += "io.cequence" %% "openai-scala-client" % "0.4.1"
 libraryDependencies += ("com.typesafe.akka" %% "akka-actor" % "2.6.20").cross(
   CrossVersion.for3Use2_13
 )
+libraryDependencies += "io.circe" %% "circe-core" % "0.14.1"
+libraryDependencies += "io.circe" %% "circe-generic" % "0.14.1"
+libraryDependencies += "io.circe" %% "circe-parser" % "0.14.1"
+libraryDependencies += "org.typelevel" %% "cats-free" % "2.10.0"
 
 libraryDependencies ++= Seq(
   "dev.zio" %% "zio" % zioVersion,

@@ -2,7 +2,6 @@ package digital.blueinsight.funscala2023
 
 import zio.*
 import scala.util.Random
-import zio.ZIO.ZioRefineToOrDieOps
 
 enum FakeTicket(content: String = """"""):
   case KitchenAidMixer
