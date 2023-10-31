@@ -30,6 +30,8 @@ import cats.implicits._
 
 import zio.interop.catz.core._
 
+import TicketFree._
+
 object GlobalConstants {
   val model = ModelId.gpt_3_5_turbo
 }
@@ -139,28 +141,13 @@ object TicketFree {
 }
 
 trait OpenAIServiceCore:
-  def getOutcome(prompt: Seq[String]): Task[String]
+  def getOutcomeForTurn(program: ChatStore[Task[String]]): Task[String]
 end OpenAIServiceCore
 
 case class OpenAIService() extends OpenAIServiceCore:
-  def getOutcome(prompt: Seq[String] = Seq()): Task[String] = {
-    import TicketFree._
-
-    val program: ChatStore[Task[String]] =
-      for {
-        _ <- systemSays("You are a helpful assistant.")
-        _ <- userSays("Who won the world series in 2020?")
-        _ <- assistantSays(
-          "The Los Angeles Dodgers won the World Series in 2020."
-        )
-        _ <- userSays("Who won the most recent cricket world cup?")
-        result <- executeChat()
-      } yield ZIO.succeed(result)
-
+  def getOutcomeForTurn(program: ChatStore[Task[String]]): Task[String] =
     TicketFree.getOutcome(program)
 
-    // ZIO.succeed("This is the outcome")
-  }
 end OpenAIService
 
 object OpenAIService:

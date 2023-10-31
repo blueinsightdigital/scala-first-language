@@ -1,6 +1,7 @@
 package digital.blueinsight.funscala2023
 
 import zio.*
+import TicketFree.*
 
 object MainApp extends ZIOAppDefault {
   val myApp: ZIO[PromptService with FakeDBService, Throwable, Unit] =
@@ -9,7 +10,9 @@ object MainApp extends ZIOAppDefault {
       _ <- ZIO.logInfo(s"Application started at $date")
       ticket <- FakeDBService().getTicket()
       result <- PromptService().basicPrompt()
-      outcome <- OpenAIService().getOutcome()
+      outcome <- OpenAIService().getOutcomeForTurn(
+        PromptService().basicProgram()
+      )
       _ <- Console.printLine(ticket)
       _ <- Console.printLine(result)
       _ <- Console.printLine("")

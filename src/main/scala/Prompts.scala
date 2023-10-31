@@ -1,6 +1,7 @@
 package digital.blueinsight.funscala2023
 
 import zio.*
+import TicketFree.*
 
 object SamplePromptInstruction:
   import Prompts._
@@ -30,7 +31,7 @@ object Prompts:
         extends PromptMessage("""Be as close to the text below as possible.""")
     case CutoffReferenceTime(p: Payload)
         extends PromptMessage(
-          s"""Do not refer to any incident before the date mentioned here: ${p.p}."""
+          s"""Do not refer to any incident before the cutoff date of ${p.p}."""
         )
     case PayloadDirection(p: Payload) extends PromptMessage()
 
@@ -50,6 +51,7 @@ end Prompts
 
 trait PromptServiceCore:
   def basicPrompt(): Task[String]
+  def basicProgram(): ChatStore[Task[String]]
 end PromptServiceCore
 
 case class PromptService() extends PromptServiceCore:
@@ -58,6 +60,18 @@ case class PromptService() extends PromptServiceCore:
       Prompts.getPrompt(SamplePromptInstruction.summarizePromptInstruction)
     )
   }
+  def basicProgram(): ChatStore[Task[String]] = {
+    val program: ChatStore[Task[String]] =
+      for {
+        _ <- systemSays("You are a helpful assistant.")
+        _ <- userSays(
+          Prompts.getPrompt(SamplePromptInstruction.summarizePromptInstruction)
+        )
+        result <- executeChat()
+      } yield ZIO.succeed(result)
+    program
+  }
+
 end PromptService
 
 object PromptService {
