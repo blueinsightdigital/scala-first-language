@@ -5,6 +5,17 @@ import TicketFree.*
 
 object SamplePromptInstruction:
   import Prompts._
+
+  def ticketPromptInstruction(ticket: String): Seq[PromptMessage] = Seq(
+    PromptMessage.TicketCSMContext,
+    PromptMessage.TrueToTextDirection,
+    PromptMessage.PayloadDirection(
+      Payload(
+        "\n```" + ticket + "```"
+      )
+    )
+  )
+
   def summarizePromptInstruction: Seq[PromptMessage] =
     Seq(
       PromptMessage.SummarizeDirection,
@@ -17,6 +28,7 @@ object SamplePromptInstruction:
         )
       )
     )
+
 end SamplePromptInstruction
 
 object Prompts:
@@ -34,6 +46,10 @@ object Prompts:
           s"""Do not refer to any incident before the cutoff date of ${p.p}."""
         )
     case PayloadDirection(p: Payload) extends PromptMessage()
+    case TicketCSMContext
+        extends PromptMessage(
+          """You are the Customer Success Manager for a well-known company in the Kitchen tools space. Your objective is to respond to the customer and resolve the feedback from the customer shared with you enclosed by triple ```. Do your best response, and keep it short and informal."""
+        )
 
     def getMessage: String = this match {
       case PreambleDirection(p) => p.p
@@ -51,7 +67,7 @@ end Prompts
 
 trait PromptServiceCore:
   def basicPrompt(): Task[String]
-  def basicProgram(): ChatStore[Task[String]]
+  def basicProgram(ticket: String): ChatStore[Task[String]]
 end PromptServiceCore
 
 case class PromptService() extends PromptServiceCore:
@@ -60,12 +76,14 @@ case class PromptService() extends PromptServiceCore:
       Prompts.getPrompt(SamplePromptInstruction.summarizePromptInstruction)
     )
   }
-  def basicProgram(): ChatStore[Task[String]] = {
+  def basicProgram(ticket: String): ChatStore[Task[String]] = {
     val program: ChatStore[Task[String]] =
       for {
         _ <- systemSays("You are a helpful assistant.")
         _ <- userSays(
-          Prompts.getPrompt(SamplePromptInstruction.summarizePromptInstruction)
+          Prompts.getPrompt(
+            SamplePromptInstruction.ticketPromptInstruction(ticket)
+          )
         )
         result <- executeChat()
       } yield ZIO.succeed(result)

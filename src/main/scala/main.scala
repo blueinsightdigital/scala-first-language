@@ -11,10 +11,9 @@ object MainApp extends ZIOAppDefault {
       ticket <- FakeDBService().getTicket()
       result <- PromptService().basicPrompt()
       outcome <- OpenAIService().getOutcomeForTurn(
-        PromptService().basicProgram()
+        PromptService().basicProgram(ticket)
       )
       _ <- Console.printLine(ticket)
-      _ <- Console.printLine(result)
       _ <- Console.printLine("")
       _ <- Console.printLine(outcome)
     } yield ()
