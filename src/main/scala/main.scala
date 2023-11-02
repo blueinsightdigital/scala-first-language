@@ -9,12 +9,14 @@ object MainApp extends ZIOAppDefault {
       date <- Clock.currentDateTime
       _ <- ZIO.logInfo(s"Application started at $date")
       ticket <- FakeDBService().getTicket()
-      result <- PromptService().basicPrompt()
+      // For debugging, we print the prompt below to the console
+      resultProgram = PromptService().basicProgram(ticket)
       outcome <- OpenAIService().getOutcomeForTurn(
-        PromptService().basicProgram(ticket)
+        resultProgram
       )
       _ <- Console.printLine(ticket)
       _ <- Console.printLine("")
+      _ <- Console.printLine(resultProgram)
       _ <- Console.printLine(outcome)
     } yield ()
 
