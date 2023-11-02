@@ -4,7 +4,11 @@ import zio.*
 import TicketFree.*
 
 object MainApp extends ZIOAppDefault {
-  val myApp: ZIO[PromptService with FakeDBService, Throwable, Unit] =
+  val myApp: ZIO[
+    PromptService with FakeDBService with OpenAIService,
+    Throwable,
+    Unit
+  ] =
     for {
       date <- Clock.currentDateTime
       _ <- ZIO.logInfo(s"Application started at $date")
@@ -21,5 +25,9 @@ object MainApp extends ZIOAppDefault {
     } yield ()
 
   def run =
-    myApp.provide(PromptService.live, FakeDBService.live)
+    myApp.provide(
+      PromptService.live,
+      FakeDBService.live,
+      OpenAIService.live
+    )
 }

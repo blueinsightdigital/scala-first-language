@@ -77,7 +77,7 @@ case class PromptService() extends PromptServiceCore:
     )
   }
   def basicProgram(ticket: String): ChatStore[Task[String]] = {
-    val program: ChatStore[Task[String]] =
+    lazy val program: ChatStore[Task[String]] =
       for {
         _ <- systemSays("You are a helpful assistant.")
         _ <- userSays(
