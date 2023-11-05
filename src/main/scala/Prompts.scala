@@ -9,6 +9,12 @@ object SamplePromptInstruction:
   def ticketPromptInstruction(ticket: String): Seq[PromptMessage] = Seq(
     PromptMessage.TicketCSMContext,
     PromptMessage.TrueToTextDirection,
+    PromptMessage.TicketJSONPayloadContext,
+    PromptMessage.PayloadDirection(
+      Payload(
+        "\n'''" + """{"user_name": "Sisir Koppaka", "agent_name": "Raphael Johnson", "loyalty_tier": "Gold"}""" + "'''"
+      )
+    ),
     PromptMessage.PayloadDirection(
       Payload(
         "\n```" + ticket + "```"
@@ -49,6 +55,10 @@ object Prompts:
     case TicketCSMContext
         extends PromptMessage(
           """You are the Customer Success Manager for a well-known company in the Kitchen tools space. Your objective is to respond to the customer and resolve the feedback from the customer shared with you enclosed by triple ```. Do your best response, and keep it short and informal."""
+        )
+    case TicketJSONPayloadContext
+        extends PromptMessage(
+          """Related information about the context of the ticket, such as the user name, your agent name, loyalty tier of the customer is provided below enclosed between triple '. """
         )
 
     def getMessage: String = this match {
