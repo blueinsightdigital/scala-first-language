@@ -58,7 +58,7 @@ object Prompts:
         )
     case TicketJSONPayloadContext
         extends PromptMessage(
-          """Related information about the context of the ticket, such as the user name, your agent name, loyalty tier of the customer is provided below enclosed between triple '. """
+          """Related information about the context of the ticket, such as the user name, your agent name, loyalty tier of the customer is provided below enclosed between triple '. Gold tier customers are entitled to free returns for 90 days and 3% cash back rewards, while Silver tier customers are entitled to free returns for 30 days and 1% cash back rewards. """
         )
 
     def getMessage: String = this match {
