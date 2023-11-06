@@ -25,6 +25,45 @@ or let me know if I should switch to a higher contrast theme.
 
 Talk Channel: #talk-language-models
 
+Note: Talk a little bit about being the senior person on a team
+where no one had Scala experience. Also mention that contributing
+is not as scary as it first seems, and encourage people to give
+it a try.
+
+---
+
+### Migrating To Scala As Your Teams First Language
+
+#### Sisir Koppaka
+
+---
+
+### Who am I
+
+- Building a practice of motivated engineers
+- I care about
+  - Functional Programming
+  - AI impacting the world positively
+  - Building things that Last
+- Experience in Data Science, Software Engineering, Site Reliability Engineering
+- Startup Founder where I learned some business skills
+
+Note: Summarize my life story and introduce Blue Insight Digital.
+
+---
+
+### What we do at Blue Insight Digital
+
+- Based out of India
+- Consulting Services in Scala, Data Science, and AI for global clients
+- Our goal is to bring the best of
+  - functional programming
+  - advances in machine learning and AI
+  - a hungry developer team
+- _to the world_
+
+Note: Lead the introduction into the case study. This talk is about the interplay of the above.
+
 ---
 
 ### Our Java Config Library
