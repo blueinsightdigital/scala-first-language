@@ -8,6 +8,7 @@ hs_err_pid*
 .vscode
 .bsp
 .bloop
+.DS_Store
 
 project/target
 project/project

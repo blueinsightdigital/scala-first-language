@@ -66,6 +66,12 @@ Note: Lead the introduction into the case study. This talk is about the interpla
 
 ---
 
+### This is a talk about how our team came to Scala again and loved the journey.
+
+[![Alt text](assets/hello.jpg)](https://digitalocean.com)
+
+---
+
 ### Our Java Config Library
 
 Lightbend (formerly Typesafe) Config
