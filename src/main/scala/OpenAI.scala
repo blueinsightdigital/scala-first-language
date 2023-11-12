@@ -33,7 +33,7 @@ import zio.interop.catz.core._
 import TicketFree._
 
 object GlobalConstants {
-  val model = ModelId.gpt_3_5_turbo
+  val model = ModelId.gpt_4
 }
 
 object TicketFree {

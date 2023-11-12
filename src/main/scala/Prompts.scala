@@ -12,7 +12,7 @@ object SamplePromptInstruction:
     PromptMessage.TicketJSONPayloadContext,
     PromptMessage.PayloadDirection(
       Payload(
-        "\n'''" + """{"user_name": "Sisir Koppaka", "agent_name": "Raphael Johnson", "loyalty_tier": "Gold"}""" + "'''"
+        "\n'''" + """{"user_name": "Sisir Koppaka", "agent_name": "Raphael Johnson", "loyalty_tier": "Silver"}""" + "'''"
       )
     ),
     PromptMessage.PayloadDirection(
